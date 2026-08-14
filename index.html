@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#120010" />
   <title>Para ti ❤️</title>
-  <!-- build: V4.5-correct-formspree-endpoint -->
+  <!-- build: V5-elegant-envelope-real-music -->
 
   <style>
     :root{
@@ -252,122 +252,185 @@
       margin-top:12px;
     }
 
-    /* ---------- SOBRE / CARTA ---------- */
+    /* ---------- SOBRE / CARTA V5 ---------- */
     .envelope-wrap{
-      perspective:1100px;
-      width:245px;
-      height:175px;
-      margin:12px auto 30px;
+      perspective:1200px;
+      width:260px;
+      height:190px;
+      margin:18px auto 34px;
+      position:relative;
     }
+
     .envelope{
       position:relative;
       width:100%;
       height:100%;
-      filter:drop-shadow(0 25px 30px rgba(0,0,0,.35));
-      animation:breath 3s ease-in-out infinite;
+      transform-style:preserve-3d;
+      filter:drop-shadow(0 26px 34px rgba(0,0,0,.34));
+      animation:breath 3.2s ease-in-out infinite;
     }
+
     .env-body{
       position:absolute;
-      inset:0;
-      border-radius:16px;
-      background:linear-gradient(140deg,#ff82ad,#e83d7d);
+      inset:24px 0 0;
+      border-radius:18px;
       overflow:hidden;
+      background:
+        linear-gradient(145deg,#7d173f 0%,#a12658 58%,#6d1237 100%);
+      border:1px solid rgba(255,255,255,.13);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.16),
+        inset 0 -16px 32px rgba(65,0,26,.22);
     }
-    .env-body:before,.env-body:after{
+
+    .env-body:before,
+    .env-body:after{
       content:"";
       position:absolute;
-      bottom:0;
-      width:0;
-      height:0;
-      border-style:solid;
+      inset:auto 0 0;
+      height:100%;
+      pointer-events:none;
     }
+
     .env-body:before{
-      left:0;
-      border-width:88px 0 0 122px;
-      border-color:transparent transparent transparent #f46096;
+      clip-path:polygon(0 26%,50% 68%,100% 26%,100% 100%,0 100%);
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0)),
+        linear-gradient(135deg,#9e2554,#7d173f);
+      z-index:3;
     }
+
     .env-body:after{
-      right:0;
-      border-width:88px 122px 0 0;
-      border-color:transparent #fb6e9e transparent transparent;
+      clip-path:polygon(0 100%,0 35%,50% 72%,100% 35%,100% 100%);
+      background:linear-gradient(160deg,rgba(255,255,255,.035),rgba(72,0,30,.18));
+      z-index:4;
     }
+
     .paper{
       position:absolute;
       z-index:2;
       width:86%;
-      height:92%;
+      height:88%;
       left:7%;
-      top:4%;
-      border-radius:18px;
+      top:19%;
+      border-radius:16px;
       background:
-        radial-gradient(circle at 85% 15%,rgba(255,110,160,.12),transparent 28%),
-        linear-gradient(180deg,#fff 0%,#fff7fb 100%);
-      color:#8b195e;
-      font-size:21px;
-      font-weight:900;
-      letter-spacing:.2px;
+        radial-gradient(circle at 84% 14%,rgba(166,38,88,.06),transparent 26%),
+        linear-gradient(180deg,#fffdf8 0%,#fff7ef 100%);
+      color:#7a2348;
+      border:1px solid rgba(122,35,72,.08);
+      box-shadow:0 7px 18px rgba(68,0,30,.13);
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:center;
-      border:1px solid rgba(140,20,90,.08);
+      gap:9px;
+      font-size:21px;
+      font-weight:850;
+      letter-spacing:.15px;
       transition:
         transform 1s cubic-bezier(.2,.8,.2,1),
-        box-shadow .5s ease;
-      box-shadow:0 5px 16px rgba(80,0,45,.10);
+        box-shadow .55s ease;
     }
 
     .paper:before{
-      content:"";
-      position:absolute;
-      top:18px;
-      width:36px;
-      height:3px;
-      border-radius:999px;
-      background:rgba(139,25,94,.18);
+      content:"Para ti";
+      display:block;
+      font-family:Georgia,"Times New Roman",serif;
+      font-style:italic;
+      font-weight:600;
+      font-size:30px;
+      color:#6e1e42;
+      letter-spacing:.2px;
     }
 
     .paper:after{
       content:"♡";
-      position:absolute;
-      bottom:14px;
-      font-size:18px;
-      color:rgba(139,25,94,.38);
+      display:block;
+      font-size:21px;
+      font-weight:400;
+      color:rgba(122,35,72,.48);
     }
+
+    .paper{
+      font-size:0;
+    }
+
     .flap{
       position:absolute;
-      z-index:4;
-      inset:0;
+      z-index:5;
+      left:0;
+      right:0;
+      top:24px;
+      height:118px;
       transform-origin:top center;
-      clip-path:polygon(0 0,100% 0,50% 58%);
-      background:linear-gradient(160deg,#ff9cbd,#ff578f);
-      transition:transform .8s cubic-bezier(.4,0,.2,1),z-index .2s;
+      clip-path:polygon(0 0,100% 0,50% 84%);
+      background:
+        linear-gradient(165deg,#b83968 0%,#8b1d49 75%);
+      border-top:1px solid rgba(255,255,255,.14);
+      transition:
+        transform .85s cubic-bezier(.4,0,.2,1),
+        z-index .18s;
+      backface-visibility:hidden;
     }
+
     .seal{
       position:absolute;
-      z-index:6;
+      z-index:7;
       left:50%;
-      top:50%;
-      transform:translate(-50%,-25%);
-      width:58px;
-      height:58px;
+      top:105px;
+      transform:translate(-50%,-50%);
+      width:52px;
+      height:52px;
       border-radius:50%;
       display:grid;
       place-items:center;
-      font-size:29px;
-      background:linear-gradient(145deg,#ff235f,#ba0b4f);
-      box-shadow:0 8px 20px rgba(120,0,50,.35);
-      transition:.35s;
+      font-size:22px;
+      background:
+        radial-gradient(circle at 36% 30%,#d14b73 0%,#a51f50 45%,#78143c 100%);
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:
+        0 9px 18px rgba(73,0,29,.30),
+        inset 0 1px 0 rgba(255,255,255,.18);
+      transition:
+        opacity .32s ease,
+        transform .4s cubic-bezier(.2,.9,.3,1);
     }
-    .envelope.open{animation:none}
-    .envelope.open .flap{z-index:1;transform:rotateX(180deg)}
-    .envelope.open .seal{opacity:0;transform:translate(-50%,-25%) scale(.25)}
+
+    .seal:after{
+      content:"♡";
+      color:#ffe9ef;
+      font-family:Georgia,serif;
+      font-size:25px;
+      line-height:1;
+    }
+
+    .seal{
+      font-size:0;
+    }
+
+    .envelope.open{
+      animation:none;
+    }
+
+    .envelope.open .flap{
+      z-index:1;
+      transform:rotateX(178deg);
+    }
+
+    .envelope.open .seal{
+      opacity:0;
+      transform:translate(-50%,-50%) scale(.35);
+    }
+
     .envelope.open .paper{
       z-index:8;
-      transform:translateY(-108px) scale(1.035);
-      box-shadow:0 24px 44px rgba(70,0,45,.20);
+      transform:translateY(-104px) scale(1.025);
+      box-shadow:0 28px 48px rgba(63,0,28,.22);
     }
+
     .envelope.reveal .paper{
-      transform:translateY(-126px) scale(1.075);
+      transform:translateY(-128px) scale(1.085);
     }
 
     .quote{
@@ -598,6 +661,8 @@
   </div>
   <div id="fx"></div>
 
+  <audio id="bgMusic" src="acurrucar.mp3" preload="metadata" loop></audio>
+
   <div class="progress"><div id="bar"></div></div>
   <button class="sound" id="soundBtn" onclick="toggleSound()" aria-label="Sonido">♪</button>
 
@@ -654,7 +719,7 @@
     <div class="content">
       <div class="heart">❤️</div>
       <h1>¿Me perdonas?</h1>
-      <p>Prometo intentar no ponerme tan cabeza dura la próxima vez JAJAJA.</p>
+      <p>Y también perdón por ser tan complicado a veces JAJAJA ❤️</p>
       <div class="buttons">
         <button class="btn pink" onclick="acceptForgive()">Sí ❤️</button>
         <button class="btn dark" id="noForgive">No</button>
@@ -809,7 +874,6 @@
     let current="intro";
     let soundOn=true;
     let audioCtx=null;
-    let musicTimer=null;
     let tries=0;
     let respuestaEnviada=false;
     const FORMSPREE_ENDPOINT="https://formspree.io/f/xvkpqayp";
@@ -879,47 +943,47 @@
       setTimeout(()=>tone(784,.28,.022),200);
     }
 
-    function startAmbientMusic(){
-      audioReady();
-      if(musicTimer) return;
 
-      const chords=[
-        [261.6,329.6,392.0],
-        [293.7,369.9,440.0],
-        [329.6,392.0,493.9],
-        [293.7,349.2,440.0]
-      ];
+    const bgMusic=document.getElementById("bgMusic");
+    let musicStarted=false;
+    let fadeTimer=null;
 
-      let i=0;
+    function startRealMusic(){
+      if(musicStarted){
+        if(soundOn) bgMusic.play().catch(()=>{});
+        return;
+      }
 
-      const play=()=>{
-        if(!soundOn || !audioCtx) return;
+      musicStarted=true;
+      bgMusic.volume=0;
+      bgMusic.play().catch(()=>{});
 
-        const chord=chords[i%chords.length];
+      clearInterval(fadeTimer);
+      let v=0;
+      fadeTimer=setInterval(()=>{
+        if(!soundOn) return;
+        v=Math.min(.23,v+.012);
+        bgMusic.volume=v;
+        if(v>=.23) clearInterval(fadeTimer);
+      },120);
+    }
 
-        // Acorde suave pero ya audible en bocina de teléfono.
-        chord.forEach((n,k)=>{
-          setTimeout(()=>tone(n,.85,.014),k*95);
-        });
-
-        // Bajo suave.
-        tone(chord[0]/2,1.15,.009);
-
-        // Nota brillante por encima para que sí se sienta "música".
-        setTimeout(()=>tone(chord[2]*2,.45,.011),520);
-
-        i++;
-      };
-
-      play();
-      musicTimer=setInterval(play,2400);
+    function pauseRealMusic(){
+      clearInterval(fadeTimer);
+      bgMusic.pause();
     }
 
     function toggleSound(){
       audioReady();
       soundOn=!soundOn;
       document.getElementById("soundBtn").textContent=soundOn?"♪":"×";
-      if(soundOn) startAmbientMusic();
+
+      if(soundOn){
+        if(musicStarted) bgMusic.play().catch(()=>{});
+        clickSound();
+      }else{
+        pauseRealMusic();
+      }
     }
 
     function setProgress(n){bar.style.width=n+"%"}
@@ -939,7 +1003,7 @@
     function openEnvelope(){
       audioReady();
       niceSound();
-      startAmbientMusic();
+      startRealMusic();
       const env=document.getElementById("envelope");
       env.classList.add("open");
       setProgress(5);
@@ -948,7 +1012,7 @@
         document.getElementById("intro").classList.remove("active");
         document.getElementById("s1").classList.add("active");
         current="s1";
-      },1450);
+      },1650);
     }
 
     const noTexts=[
