@@ -293,22 +293,44 @@
     .paper{
       position:absolute;
       z-index:2;
-      width:88%;
-      height:82%;
-      left:6%;
-      top:9%;
-      border-radius:13px;
-      background:linear-gradient(#fff,#ffedf5);
+      width:86%;
+      height:92%;
+      left:7%;
+      top:4%;
+      border-radius:18px;
+      background:
+        radial-gradient(circle at 85% 15%,rgba(255,110,160,.12),transparent 28%),
+        linear-gradient(180deg,#fff 0%,#fff7fb 100%);
       color:#8b195e;
-      font-size:22px;
+      font-size:21px;
       font-weight:900;
+      letter-spacing:.2px;
       display:flex;
       align-items:center;
       justify-content:center;
+      border:1px solid rgba(140,20,90,.08);
       transition:
         transform 1s cubic-bezier(.2,.8,.2,1),
         box-shadow .5s ease;
-      box-shadow:0 4px 14px rgba(80,0,45,.08);
+      box-shadow:0 5px 16px rgba(80,0,45,.10);
+    }
+
+    .paper:before{
+      content:"";
+      position:absolute;
+      top:18px;
+      width:36px;
+      height:3px;
+      border-radius:999px;
+      background:rgba(139,25,94,.18);
+    }
+
+    .paper:after{
+      content:"♡";
+      position:absolute;
+      bottom:14px;
+      font-size:18px;
+      color:rgba(139,25,94,.38);
     }
     .flap{
       position:absolute;
@@ -340,11 +362,11 @@
     .envelope.open .seal{opacity:0;transform:translate(-50%,-25%) scale(.25)}
     .envelope.open .paper{
       z-index:8;
-      transform:translateY(-100px) scale(1.05);
-      box-shadow:0 22px 40px rgba(70,0,45,.22);
+      transform:translateY(-108px) scale(1.035);
+      box-shadow:0 24px 44px rgba(70,0,45,.20);
     }
     .envelope.reveal .paper{
-      transform:translateY(-118px) scale(1.13);
+      transform:translateY(-126px) scale(1.075);
     }
 
     .quote{
@@ -757,6 +779,8 @@
     let audioCtx=null;
     let musicTimer=null;
     let tries=0;
+    let respuestaEnviada=false;
+    const FORMSPREE_ENDPOINT="https://formspree.io/f/xvkpqgyp";
 
     const ambient=document.getElementById("ambient");
     const fx=document.getElementById("fx");
@@ -826,21 +850,37 @@
     function startAmbientMusic(){
       audioReady();
       if(musicTimer) return;
-      const seq=[
+
+      const chords=[
         [261.6,329.6,392.0],
         [293.7,369.9,440.0],
         [329.6,392.0,493.9],
         [293.7,349.2,440.0]
       ];
+
       let i=0;
+
       const play=()=>{
         if(!soundOn || !audioCtx) return;
-        const chord=seq[i%seq.length];
-        chord.forEach((n,k)=>setTimeout(()=>tone(n,.55,.0065),k*95));
+
+        const chord=chords[i%chords.length];
+
+        // Acorde suave pero ya audible en bocina de teléfono.
+        chord.forEach((n,k)=>{
+          setTimeout(()=>tone(n,.85,.014),k*95);
+        });
+
+        // Bajo suave.
+        tone(chord[0]/2,1.15,.009);
+
+        // Nota brillante por encima para que sí se sienta "música".
+        setTimeout(()=>tone(chord[2]*2,.45,.011),520);
+
         i++;
       };
+
       play();
-      musicTimer=setInterval(play,2500);
+      musicTimer=setInterval(play,2400);
     }
 
     function toggleSound(){
@@ -978,7 +1018,29 @@
       go("proposal",96);
     }
 
+    function registrarRespuesta(respuesta){
+      if(respuestaEnviada) return;
+      respuestaEnviada=true;
+
+      const datos=new FormData();
+      datos.append("respuesta",respuesta);
+      datos.append("subject","💌 Respuesta de la página: "+respuesta);
+      datos.append("pagina","Para ti ❤️");
+      datos.append("fecha",new Date().toLocaleString("es-MX"));
+
+      fetch(FORMSPREE_ENDPOINT,{
+        method:"POST",
+        body:datos,
+        headers:{Accept:"application/json"},
+        keepalive:true
+      }).catch(()=>{
+        // Si justo falla la conexión, permitimos otro intento si vuelve a pulsar.
+        respuestaEnviada=false;
+      });
+    }
+
     function yesAnswer(ev){
+      registrarRespuesta("SÍ ❤️");
       audioReady();
       niceSound();
       setProgress(100);
@@ -1010,6 +1072,7 @@
     }
 
     function noAnswer(){
+      registrarRespuesta("NO");
       clickSound();
       document.getElementById(current).classList.remove("active");
       document.getElementById("no").classList.add("active");
