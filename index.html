@@ -3,79 +3,540 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Para ti ❤️</title>
 
   <style>
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       margin: 0;
+      width: 100%;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(160deg, #160018, #430044, #8b006d);
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
       color: white;
-      text-align: center;
-      padding: 25px;
+      background:
+        radial-gradient(circle at top, #7a0b61 0%, #31002f 45%, #120011 100%);
     }
 
-    .caja {
+    .pantalla {
+      position: fixed;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 28px;
+      animation: aparecer .7s ease;
+    }
+
+    .pantalla.activa {
+      display: flex;
+    }
+
+    .contenido {
       width: 100%;
-      max-width: 420px;
+      max-width: 430px;
+      position: relative;
+      z-index: 5;
     }
 
     h1 {
       font-size: 36px;
-      margin-bottom: 15px;
+      margin: 0 0 20px;
+      line-height: 1.15;
+    }
+
+    h2 {
+      font-size: 29px;
+      margin: 0 0 20px;
+      line-height: 1.25;
     }
 
     p {
       font-size: 19px;
-      line-height: 1.5;
-      opacity: 0.9;
+      line-height: 1.55;
+      margin: 13px 0;
+      color: rgba(255,255,255,.92);
+    }
+
+    .grande {
+      font-size: 25px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .frase {
+      margin: 25px 0;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.17);
+      font-size: 21px;
+      font-style: italic;
     }
 
     button {
-      margin-top: 25px;
       border: none;
-      border-radius: 30px;
-      padding: 15px 30px;
+      padding: 15px 28px;
+      margin-top: 22px;
+      border-radius: 999px;
       font-size: 18px;
-      cursor: pointer;
-      background: white;
-      color: #72005d;
       font-weight: bold;
+      cursor: pointer;
+      transition: transform .15s ease;
     }
 
     button:active {
-      transform: scale(0.95);
+      transform: scale(.94);
+    }
+
+    .principal {
+      background: white;
+      color: #75005e;
+      box-shadow: 0 8px 28px rgba(0,0,0,.25);
+    }
+
+    .botones {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .si {
+      background: #ff4f87;
+      color: white;
+      min-width: 125px;
+    }
+
+    .no {
+      background: rgba(255,255,255,.17);
+      border: 1px solid rgba(255,255,255,.25);
+      color: white;
+      min-width: 125px;
+    }
+
+    .corazon-grande {
+      font-size: 75px;
+      animation: latido 1s infinite;
+      margin-bottom: 20px;
+    }
+
+    .mini {
+      font-size: 15px;
+      opacity: .65;
+      margin-top: 25px;
+    }
+
+    .corazon-flotante {
+      position: fixed;
+      bottom: -50px;
+      pointer-events: none;
+      z-index: 1;
+      animation: subir linear forwards;
+      opacity: .7;
+    }
+
+    .confeti {
+      position: fixed;
+      top: -20px;
+      pointer-events: none;
+      z-index: 20;
+      animation: caer linear forwards;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: scale(.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes latido {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.15);
+      }
+    }
+
+    @keyframes subir {
+      from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: .8;
+      }
+      to {
+        transform: translateY(-115vh) rotate(35deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes caer {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="caja">
-    <h1>Tengo algo para ti ❤️</h1>
+  <!-- PANTALLA 1 -->
+  <section class="pantalla activa" id="p1">
+    <div class="contenido">
+      <div class="corazon-grande">❤️</div>
 
-    <p>
-      Sé que tardé un poco en contestarte...
-      pero esta vez tenía una razón.
-    </p>
+      <h1>Tengo algo para ti</h1>
 
-    <button onclick="continuar()">Ábrelo ❤️</button>
-  </div>
+      <p>
+        Sé que tardé en contestarte...
+      </p>
+
+      <p>
+        pero esta vez no quería simplemente mandarte otro mensaje.
+      </p>
+
+      <button class="principal" onclick="ir(2)">
+        Ábrelo ❤️
+      </button>
+    </div>
+  </section>
+
+
+  <!-- PANTALLA 2 -->
+  <section class="pantalla" id="p2">
+    <div class="contenido">
+
+      <h2>Primero quiero decirte algo...</h2>
+
+      <p>
+        Amor, perdón por dejarte así y por no contestarte antes.
+      </p>
+
+      <p>
+        La vd sí estaba cansado y también molesto, y terminé
+        diciéndote las cosas de una forma que no quería.
+      </p>
+
+      <button class="principal" onclick="ir(3)">
+        Sigue ❤️
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- PANTALLA 3 -->
+  <section class="pantalla" id="p3">
+    <div class="contenido">
+
+      <h2>Pero quiero que sepas esto</h2>
+
+      <p>
+        No es que me dé igual si estás conmigo o no.
+      </p>
+
+      <p class="grande">
+        Porque claramente sí quiero estar contigo.
+      </p>
+
+      <p>
+        Y sí quiero algo bien contigo.
+      </p>
+
+      <p>
+        En ese momento ya no tenía cabeza para seguir hablando
+        y preferí no seguir contestando así.
+      </p>
+
+      <button class="principal" onclick="ir(4)">
+        Hay algo más...
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- PANTALLA 4 -->
+  <section class="pantalla" id="p4">
+    <div class="contenido">
+
+      <h2>Y aparte...</h2>
+
+      <p>
+        Dijiste algo que sí se me quedó dando vueltas en la cabeza.
+      </p>
+
+      <div class="frase">
+        “Y ni mi novio eres...”
+      </div>
+
+      <p>
+        Y pues sí JAJAJA, en eso tienes razón.
+      </p>
+
+      <button class="principal" onclick="ir(5)">
+        Pero espérate...
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- PANTALLA 5 -->
+  <section class="pantalla" id="p5">
+    <div class="contenido">
+
+      <h2>La vd yo nunca hago estas cosas</h2>
+
+      <p>
+        Nunca he sido de pedirle a alguien que sea mi novia
+        ni de hacer todo este show.
+      </p>
+
+      <p>
+        Ya sabes cómo soy.
+      </p>
+
+      <p class="grande">
+        Pero contigo quiero hacerlo diferente ❤️
+      </p>
+
+      <button class="principal" onclick="ir(6)">
+        Entonces...
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- PANTALLA 6 -->
+  <section class="pantalla" id="p6">
+    <div class="contenido">
+
+      <h2>Y no...</h2>
+
+      <p>
+        Tampoco pienso esperar como 6 meses hasta que nos podamos ver
+        para dejar esto en el aire 😂
+      </p>
+
+      <p>
+        Cuando te vea quiero hacer algo bonito en persona también...
+      </p>
+
+      <p>
+        pero hay algo que quiero preguntarte desde ahorita.
+      </p>
+
+      <button class="principal" onclick="ir(7)">
+        Dime 👀❤️
+      </button>
+
+    </div>
+  </section>
+
+
+  <!-- PANTALLA 7 -->
+  <section class="pantalla" id="p7">
+    <div class="contenido">
+
+      <div class="corazon-grande">❤️</div>
+
+      <h1>¿Quieres ser mi novia?</h1>
+
+      <p>
+        Ahora sí, oficialmente.
+      </p>
+
+      <div class="botones">
+        <button class="si" onclick="respuestaSi()">
+          Sí ❤️
+        </button>
+
+        <button class="no" onclick="respuestaNo()">
+          No
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SI -->
+  <section class="pantalla" id="si">
+    <div class="contenido">
+
+      <div class="corazon-grande">❤️</div>
+
+      <h1>Entonces ya quedó 😌❤️</h1>
+
+      <p class="grande">
+        Ya eres mi novia.
+      </p>
+
+      <p>
+        Te quiero muchísimo y la vd sí me haces muy feliz.
+      </p>
+
+      <p>
+        Y cuando por fin te tenga enfrente,
+        todavía te espera la versión en persona ❤️
+      </p>
+
+      <p class="mini">
+        P.D. Sí, hice todo esto para preguntártelo JAJAJA.
+      </p>
+
+    </div>
+  </section>
+
+
+  <!-- NO -->
+  <section class="pantalla" id="no">
+    <div class="contenido">
+
+      <h2>Está bien ❤️</h2>
+
+      <p>
+        No pasa nada, no quería obligarte a decir que sí.
+      </p>
+
+      <p>
+        Igual quería hacerte esto para que supieras
+        que sí me importas y que todo lo que te dije fue en serio.
+      </p>
+
+    </div>
+  </section>
+
 
   <script>
-    function continuar() {
-      alert("Esto apenas empieza ❤️");
+
+    function ir(numero) {
+      document.querySelectorAll(".pantalla").forEach(p => {
+        p.classList.remove("activa");
+      });
+
+      document.getElementById("p" + numero).classList.add("activa");
     }
+
+
+    function respuestaSi() {
+      document.querySelectorAll(".pantalla").forEach(p => {
+        p.classList.remove("activa");
+      });
+
+      document.getElementById("si").classList.add("activa");
+
+      lanzarConfeti();
+      lluviaCorazones();
+    }
+
+
+    function respuestaNo() {
+      document.querySelectorAll(".pantalla").forEach(p => {
+        p.classList.remove("activa");
+      });
+
+      document.getElementById("no").classList.add("activa");
+    }
+
+
+    function crearCorazon() {
+      const corazon = document.createElement("div");
+
+      const corazones = ["❤️", "💕", "💗", "💖"];
+      corazon.innerText =
+        corazones[Math.floor(Math.random() * corazones.length)];
+
+      corazon.className = "corazon-flotante";
+
+      corazon.style.left = Math.random() * 100 + "vw";
+      corazon.style.fontSize =
+        (18 + Math.random() * 25) + "px";
+
+      corazon.style.animationDuration =
+        (5 + Math.random() * 5) + "s";
+
+      document.body.appendChild(corazon);
+
+      setTimeout(() => {
+        corazon.remove();
+      }, 10000);
+    }
+
+
+    setInterval(crearCorazon, 700);
+
+
+    function lanzarConfeti() {
+
+      const simbolos = ["❤️", "💕", "✨", "💗", "🎉"];
+
+      for (let i = 0; i < 60; i++) {
+
+        setTimeout(() => {
+
+          const pieza = document.createElement("div");
+
+          pieza.className = "confeti";
+
+          pieza.innerText =
+            simbolos[Math.floor(Math.random() * simbolos.length)];
+
+          pieza.style.left =
+            Math.random() * 100 + "vw";
+
+          pieza.style.fontSize =
+            (15 + Math.random() * 20) + "px";
+
+          pieza.style.animationDuration =
+            (2.5 + Math.random() * 3) + "s";
+
+          document.body.appendChild(pieza);
+
+          setTimeout(() => {
+            pieza.remove();
+          }, 6000);
+
+        }, i * 50);
+      }
+    }
+
+
+    function lluviaCorazones() {
+
+      let cantidad = 0;
+
+      const lluvia = setInterval(() => {
+
+        crearCorazon();
+        crearCorazon();
+
+        cantidad++;
+
+        if (cantidad > 25) {
+          clearInterval(lluvia);
+        }
+
+      }, 150);
+    }
+
   </script>
 
 </body>
-</html>
+    </html>
