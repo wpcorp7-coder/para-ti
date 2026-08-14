@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#120010" />
   <title>Para ti ❤️</title>
-  <!-- build: V4.3-native-form-submit -->
+  <!-- build: V4.4-native-form-no-email-debug -->
 
   <style>
     :root{
@@ -741,7 +741,6 @@
         target="formspree_sink"
         onsubmit="prepareNativeSubmission()">
 
-        <input type="hidden" name="email" value="respuesta@para-ti.local">
         <input type="hidden" name="subject" id="nativeSubject" value="💌 Respuesta de la página">
         <input type="hidden" name="message" id="nativeMessage" value="">
         <input type="hidden" name="pagina" value="Para ti ❤️">
@@ -1063,9 +1062,18 @@
     }
 
     function prepareNativeSubmission(){
-      // No cancelamos el submit: el navegador hace un POST HTML real
-      // al endpoint de Formspree y lo carga en el iframe oculto.
       if(!nativeAnswer) setNativeAnswer("RESPUESTA");
+
+      const form=document.getElementById("proposalForm");
+      const debug=new URLSearchParams(window.location.search).get("debug")==="1";
+
+      // En modo prueba mostramos directamente la respuesta de Formspree.
+      // En uso normal se envía al iframe oculto para no sacar a ella de la sorpresa.
+      if(debug){
+        form.removeAttribute("target");
+      }else{
+        form.setAttribute("target","formspree_sink");
+      }
     }
 
     function yesAnswer(ev){
