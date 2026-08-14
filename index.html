@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#120010" />
   <title>Para ti ❤️</title>
-  <!-- build: V4.2-formspree-official-ajax -->
+  <!-- build: V4.3-native-form-submit -->
 
   <style>
     :root{
@@ -601,18 +601,8 @@
   <div class="progress"><div id="bar"></div></div>
   <button class="sound" id="soundBtn" onclick="toggleSound()" aria-label="Sonido">♪</button>
 
-  <!-- Formulario oculto para registrar la respuesta en Formspree -->
-  <form id="answerForm" style="display:none">
-    <input type="email" name="email" value="respuesta@example.com" data-fs-field>
-    <input type="hidden" name="respuesta" id="answerValue" data-fs-field>
-    <input type="hidden" name="subject" id="answerSubject" data-fs-field>
-    <input type="hidden" name="message" id="answerMessage" data-fs-field>
-    <input type="hidden" name="pagina" value="Para ti ❤️" data-fs-field>
-    <input type="hidden" name="fecha" id="answerDate" data-fs-field>
-    <button type="submit" id="answerSubmit" data-fs-submit-btn>Enviar</button>
-  </form>
-  <div data-fs-success style="display:none"></div>
-  <div data-fs-error style="display:none"></div>
+  <!-- Destino oculto para el POST nativo a Formspree -->
+  <iframe name="formspree_sink" id="formspree_sink" style="display:none"></iframe>
 
   <section class="screen active" id="intro">
     <div class="content">
@@ -744,10 +734,39 @@
       <div class="heart">❤️</div>
       <h1 class="proposalTitle">¿Quieres ser mi novia?</h1>
       <p>Ahora sí... oficialmente ❤️</p>
-      <div class="buttons">
-        <button class="btn pink" onclick="yesAnswer(event)">Sí ❤️</button>
-        <button class="btn dark" onclick="noAnswer()">No</button>
-      </div>
+      <form
+        id="proposalForm"
+        action="https://formspree.io/f/xvkpqgyp"
+        method="POST"
+        target="formspree_sink"
+        onsubmit="prepareNativeSubmission()">
+
+        <input type="hidden" name="email" value="respuesta@para-ti.local">
+        <input type="hidden" name="subject" id="nativeSubject" value="💌 Respuesta de la página">
+        <input type="hidden" name="message" id="nativeMessage" value="">
+        <input type="hidden" name="pagina" value="Para ti ❤️">
+        <input type="hidden" name="fecha" id="nativeDate" value="">
+
+        <div class="buttons">
+          <button
+            class="btn pink"
+            type="submit"
+            name="respuesta"
+            value="SÍ ❤️"
+            onclick="setNativeAnswer('SÍ ❤️'); yesAnswer(event)">
+            Sí ❤️
+          </button>
+
+          <button
+            class="btn dark"
+            type="submit"
+            name="respuesta"
+            value="NO"
+            onclick="setNativeAnswer('NO'); noAnswer()">
+            No
+          </button>
+        </div>
+      </form>
     </div></div>
   </section>
 
@@ -1032,26 +1051,24 @@
       go("proposal",96);
     }
 
-    function registrarRespuesta(respuesta){
-      if(respuestaEnviada) return;
 
-      document.getElementById("answerValue").value=respuesta;
-      document.getElementById("answerSubject").value="💌 Respuesta de la página: "+respuesta;
-      document.getElementById("answerMessage").value="Ella respondió: "+respuesta;
-      document.getElementById("answerDate").value=new Date().toLocaleString("es-MX");
+    let nativeAnswer="";
 
-      respuestaEnviada=true;
+    function setNativeAnswer(answer){
+      nativeAnswer=answer;
+      const now=new Date().toLocaleString("es-MX");
+      document.getElementById("nativeDate").value=now;
+      document.getElementById("nativeSubject").value="💌 Respuesta de la página: "+answer;
+      document.getElementById("nativeMessage").value="Ella respondió: "+answer+" | "+now;
+    }
 
-      const form=document.getElementById("answerForm");
-      if(form.requestSubmit){
-        form.requestSubmit();
-      }else{
-        document.getElementById("answerSubmit").click();
-      }
+    function prepareNativeSubmission(){
+      // No cancelamos el submit: el navegador hace un POST HTML real
+      // al endpoint de Formspree y lo carga en el iframe oculto.
+      if(!nativeAnswer) setNativeAnswer("RESPUESTA");
     }
 
     function yesAnswer(ev){
-      registrarRespuesta("SÍ ❤️");
       audioReady();
       niceSound();
       setProgress(100);
@@ -1083,7 +1100,6 @@
     }
 
     function noAnswer(){
-      registrarRespuesta("NO");
       clickSound();
       document.getElementById(current).classList.remove("active");
       document.getElementById("no").classList.add("active");
@@ -1176,18 +1192,5 @@
     }
   </script>
 
-  <script>
-    window.formspree =
-      window.formspree ||
-      function () {
-        (formspree.q = formspree.q || []).push(arguments);
-      };
-
-    formspree("initForm", {
-      formElement: "#answerForm",
-      formId: "xvkpqgyp"
-    });
-  </script>
-  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
