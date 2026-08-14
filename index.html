@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#120010" />
   <title>Para ti ❤️</title>
-  <!-- build: V4.1-formspree-hidden-form -->
+  <!-- build: V4.2-formspree-official-ajax -->
 
   <style>
     :root{
@@ -601,21 +601,18 @@
   <div class="progress"><div id="bar"></div></div>
   <button class="sound" id="soundBtn" onclick="toggleSound()" aria-label="Sonido">♪</button>
 
-  <!-- Envío invisible y compatible con páginas estáticas -->
-  <iframe name="formspree_sink" id="formspree_sink" style="display:none"></iframe>
-
-  <form
-    id="answerForm"
-    action="https://formspree.io/f/xvkpqgyp"
-    method="POST"
-    target="formspree_sink"
-    style="display:none">
-    <input type="hidden" name="respuesta" id="answerValue">
-    <input type="hidden" name="subject" id="answerSubject">
-    <input type="hidden" name="message" id="answerMessage">
-    <input type="hidden" name="pagina" value="Para ti ❤️">
-    <input type="hidden" name="fecha" id="answerDate">
+  <!-- Formulario oculto para registrar la respuesta en Formspree -->
+  <form id="answerForm" style="display:none">
+    <input type="email" name="email" value="respuesta@example.com" data-fs-field>
+    <input type="hidden" name="respuesta" id="answerValue" data-fs-field>
+    <input type="hidden" name="subject" id="answerSubject" data-fs-field>
+    <input type="hidden" name="message" id="answerMessage" data-fs-field>
+    <input type="hidden" name="pagina" value="Para ti ❤️" data-fs-field>
+    <input type="hidden" name="fecha" id="answerDate" data-fs-field>
+    <button type="submit" id="answerSubmit" data-fs-submit-btn>Enviar</button>
   </form>
+  <div data-fs-success style="display:none"></div>
+  <div data-fs-error style="display:none"></div>
 
   <section class="screen active" id="intro">
     <div class="content">
@@ -1038,16 +1035,19 @@
     function registrarRespuesta(respuesta){
       if(respuestaEnviada) return;
 
-      const form=document.getElementById("answerForm");
       document.getElementById("answerValue").value=respuesta;
       document.getElementById("answerSubject").value="💌 Respuesta de la página: "+respuesta;
       document.getElementById("answerMessage").value="Ella respondió: "+respuesta;
       document.getElementById("answerDate").value=new Date().toLocaleString("es-MX");
 
-      // Envío HTML normal hacia un iframe oculto:
-      // no depende de fetch/CORS y no saca a la persona de la sorpresa.
-      form.submit();
       respuestaEnviada=true;
+
+      const form=document.getElementById("answerForm");
+      if(form.requestSubmit){
+        form.requestSubmit();
+      }else{
+        document.getElementById("answerSubmit").click();
+      }
     }
 
     function yesAnswer(ev){
@@ -1175,5 +1175,19 @@
       clickSound();
     }
   </script>
+
+  <script>
+    window.formspree =
+      window.formspree ||
+      function () {
+        (formspree.q = formspree.q || []).push(arguments);
+      };
+
+    formspree("initForm", {
+      formElement: "#answerForm",
+      formId: "xvkpqgyp"
+    });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
