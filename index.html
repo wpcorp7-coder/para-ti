@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#120010" />
   <title>Para ti ❤️</title>
-  <!-- build: V5-elegant-envelope-real-music -->
+  <!-- build: V5.1-envelope-clean-music-stable -->
 
   <style>
     :root{
@@ -257,7 +257,7 @@
       perspective:1200px;
       width:260px;
       height:190px;
-      margin:18px auto 34px;
+      margin:22px auto 42px;
       position:relative;
     }
 
@@ -272,8 +272,8 @@
 
     .env-body{
       position:absolute;
-      inset:24px 0 0;
-      border-radius:18px;
+      inset:30px 0 0;
+      border-radius:20px;
       overflow:hidden;
       background:
         linear-gradient(145deg,#7d173f 0%,#a12658 58%,#6d1237 100%);
@@ -328,9 +328,12 @@
       font-size:21px;
       font-weight:850;
       letter-spacing:.15px;
+      transform:translateY(34px) scale(.97);
+      opacity:0;
       transition:
         transform 1s cubic-bezier(.2,.8,.2,1),
-        box-shadow .55s ease;
+        box-shadow .55s ease,
+        opacity .32s ease;
     }
 
     .paper:before{
@@ -361,8 +364,8 @@
       z-index:5;
       left:0;
       right:0;
-      top:24px;
-      height:118px;
+      top:30px;
+      height:112px;
       transform-origin:top center;
       clip-path:polygon(0 0,100% 0,50% 84%);
       background:
@@ -378,7 +381,7 @@
       position:absolute;
       z-index:7;
       left:50%;
-      top:105px;
+      top:108px;
       transform:translate(-50%,-50%);
       width:52px;
       height:52px;
@@ -425,12 +428,14 @@
 
     .envelope.open .paper{
       z-index:8;
-      transform:translateY(-104px) scale(1.025);
+      opacity:1;
+      transform:translateY(-92px) scale(1.015);
       box-shadow:0 28px 48px rgba(63,0,28,.22);
     }
 
     .envelope.reveal .paper{
-      transform:translateY(-128px) scale(1.085);
+      opacity:1;
+      transform:translateY(-122px) scale(1.075);
     }
 
     .quote{
@@ -661,7 +666,7 @@
   </div>
   <div id="fx"></div>
 
-  <audio id="bgMusic" src="acurrucar.mp3" preload="metadata" loop></audio>
+  <audio id="bgMusic" src="acurrucar.mp3" preload="auto" loop playsinline></audio>
 
   <div class="progress"><div id="bar"></div></div>
   <button class="sound" id="soundBtn" onclick="toggleSound()" aria-label="Sonido">♪</button>
@@ -946,32 +951,88 @@
 
     const bgMusic=document.getElementById("bgMusic");
     let musicStarted=false;
+    let musicWanted=false;
     let fadeTimer=null;
+    let resumeTimer=null;
 
-    function startRealMusic(){
-      if(musicStarted){
-        if(soundOn) bgMusic.play().catch(()=>{});
-        return;
-      }
+    bgMusic.volume=.23;
 
-      musicStarted=true;
-      bgMusic.volume=0;
-      bgMusic.play().catch(()=>{});
+    function ensureMusicPlaying(){
+      if(!musicWanted || !soundOn || !musicStarted) return;
 
-      clearInterval(fadeTimer);
-      let v=0;
-      fadeTimer=setInterval(()=>{
-        if(!soundOn) return;
-        v=Math.min(.23,v+.012);
-        bgMusic.volume=v;
-        if(v>=.23) clearInterval(fadeTimer);
+      clearTimeout(resumeTimer);
+      resumeTimer=setTimeout(()=>{
+        if(bgMusic.paused){
+          bgMusic.play().catch(()=>{});
+        }
       },120);
     }
 
-    function pauseRealMusic(){
+    function startRealMusic(){
+      musicStarted=true;
+      musicWanted=true;
+
       clearInterval(fadeTimer);
+      bgMusic.volume=0;
+
+      const p=bgMusic.play();
+      if(p && p.catch) p.catch(()=>{});
+
+      let v=0;
+      fadeTimer=setInterval(()=>{
+        if(!musicWanted || !soundOn){
+          clearInterval(fadeTimer);
+          return;
+        }
+
+        v=Math.min(.23,v+.014);
+        bgMusic.volume=v;
+
+        if(v>=.23){
+          clearInterval(fadeTimer);
+        }
+      },110);
+    }
+
+    function pauseRealMusic(){
+      musicWanted=false;
+      clearInterval(fadeTimer);
+      clearTimeout(resumeTimer);
       bgMusic.pause();
     }
+
+    // En algunos Android/Chrome el audio puede recibir un pause/stall breve
+    // durante cambios de pantalla. Si la persona no lo pausó, lo reanudamos.
+    bgMusic.addEventListener("pause",()=>{
+      if(musicWanted && soundOn){
+        ensureMusicPlaying();
+      }
+    });
+
+    bgMusic.addEventListener("canplay",()=>{
+      if(musicWanted && soundOn){
+        ensureMusicPlaying();
+      }
+    });
+
+    bgMusic.addEventListener("stalled",()=>{
+      if(musicWanted && soundOn){
+        ensureMusicPlaying();
+      }
+    });
+
+    bgMusic.addEventListener("ended",()=>{
+      if(musicWanted && soundOn){
+        bgMusic.currentTime=0;
+        bgMusic.play().catch(()=>{});
+      }
+    });
+
+    document.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState==="visible" && musicWanted && soundOn){
+        ensureMusicPlaying();
+      }
+    });
 
     function toggleSound(){
       audioReady();
@@ -979,7 +1040,10 @@
       document.getElementById("soundBtn").textContent=soundOn?"♪":"×";
 
       if(soundOn){
-        if(musicStarted) bgMusic.play().catch(()=>{});
+        if(musicStarted){
+          musicWanted=true;
+          ensureMusicPlaying();
+        }
         clickSound();
       }else{
         pauseRealMusic();
